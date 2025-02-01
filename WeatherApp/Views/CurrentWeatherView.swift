@@ -19,7 +19,7 @@ struct CurrentWeatherView: View {
                     WeatherHeaderView(weather: weather.current)
                         .transition(.moveAndFade)
                     
-                    WeatherDetailsGrid(weather: weather.current) // Remove 'settingsManager' parameter
+                    WeatherDetailsGrid(weather: weather.current)
                     
                     HourlyPreviewView(hourlyData: Array(weather.hourly.prefix(6)))
                         .transition(.slide)
@@ -35,6 +35,6 @@ struct CurrentWeatherView: View {
             await weatherManager.refreshWeather()
             isRefreshing = false
         }
-        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weatherManager.weatherData) // Remove default value
+        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weatherManager.weatherData)
     }
 }

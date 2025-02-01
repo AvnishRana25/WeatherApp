@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct WeatherDetailsGrid: View {
-    let weather: WeatherData.Current
     @EnvironmentObject var settingsManager: SettingsManager
+    let weather: WeatherData.Current 
     
-    var body: some View {
+    var body: some View  {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 15) {
             WeatherInfoItem(title: "Humidity",
                           value: "\(weather.humidity)%",
