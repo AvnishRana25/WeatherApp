@@ -7,11 +7,11 @@ struct WeatherDetailsGrid: View {
     var body: some View  {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 15) {
             WeatherInfoItem(title: "Humidity",
-                          value: "\(weather.humidity)%",
+                          value: "\(weather.relativeHumidity2m)%",
                           icon: "humidity.fill")
             
             WeatherInfoItem(title: "Wind Speed",
-                          value: formatWindSpeed(weather.windSpeed),
+                          value: formatWindSpeed(weather.windSpeed10m),
                           icon: "wind")
             
             WeatherInfoItem(title: "UV Index",
@@ -27,7 +27,7 @@ struct WeatherDetailsGrid: View {
                           icon: "gauge")
             
             WeatherInfoItem(title: "Cloud Cover",
-                          value: "\(weather.clouds)%",
+                          value: "\(weather.cloudCover)%",
                           icon: "cloud.fill")
         }
         .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weather.temperature2m)

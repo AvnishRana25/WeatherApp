@@ -4,7 +4,7 @@ struct WeatherData: Decodable, Equatable {
     let latitude: Double
     let longitude: Double
     let timezone: String
-    let timezoneOffset: Double
+    let timezoneOffset: Double?
     let current: Current
     let hourly: Hourly
     let daily: Daily
@@ -45,7 +45,6 @@ struct WeatherData: Decodable, Equatable {
         var windSpeed: Double { windSpeed10m }
         var pressure: Double { pressureMsl }
         var clouds: Int { cloudCover }
-        var uvIndex: Double { uvIndex }  // Direct property access
     }
     
     // MARK: - Hourly Forecast
