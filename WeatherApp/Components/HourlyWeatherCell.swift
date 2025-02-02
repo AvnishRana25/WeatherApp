@@ -1,16 +1,16 @@
 import SwiftUI
 
 struct HourlyWeatherCell: View {
-    let hourly: WeatherData.Hourly
+    let hourly: WeatherData.HourlyForecast
     @EnvironmentObject var settingsManager: SettingsManager
     
     var body: some View {
         VStack(spacing: 8) {
-            Text(formatHour(hourly.dt))
+            Text(formatHour(hourly.time))
                 .font(.caption)
                 .foregroundColor(.secondary)
             
-            Image(systemName: getWeatherIcon(hourly.weather.first?.main ?? ""))
+            Image(systemName: getWeatherIcon(hourly.weather.main))
                 .font(.title2)
                 .symbolEffect(.bounce)
             
@@ -24,9 +24,10 @@ struct HourlyWeatherCell: View {
         .animation(.spring(response: 0.3), value: hourly.temp)
     }
     
-    private func formatHour(_ timestamp: Int) -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+    private func formatHour(_ timeString: String) -> String {
         let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
+        guard let date = formatter.date(from: timeString) else { return "" }
         formatter.dateFormat = "HH:mm"
         return formatter.string(from: date)
     }

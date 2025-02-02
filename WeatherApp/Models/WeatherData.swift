@@ -56,6 +56,7 @@ struct WeatherData: Decodable, Equatable {
         let sunrise: [String]
         let sunset: [String]
         let uvIndexMax: [Double]
+        let precipitationProbabilityMax: [Int]
         
         var forecasts: [DailyForecast] {
             time.indices.map { i in
@@ -66,7 +67,8 @@ struct WeatherData: Decodable, Equatable {
                     tempMin: temperature2mMin[i],
                     sunrise: sunrise[i],
                     sunset: sunset[i],
-                    uvIndex: uvIndexMax[i]
+                    uvIndex: uvIndexMax[i],
+                    precipitationProbability: precipitationProbabilityMax[i]
                 )
             }
         }
@@ -93,6 +95,7 @@ struct WeatherData: Decodable, Equatable {
         let sunrise: String
         let sunset: String
         let uvIndex: Double
+        let precipitationProbability: Int
         
         var id: String { time }
         var weather: Weather { Weather(code: weatherCode) }

@@ -40,8 +40,6 @@ class WeatherManager: ObservableObject {
                 return
             }
             
-            print("API Response Status: \(httpResponse.statusCode)")
-            
             if httpResponse.statusCode != 200 {
                 if let errorString = String(data: data, encoding: .utf8) {
                     print("API Error: \(errorString)")
@@ -52,15 +50,27 @@ class WeatherManager: ObservableObject {
                 return
             }
             
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            weatherData = try decoder.decode(WeatherData.self, from: data)
-            error = nil
-            
-            // Debug successful decode
-            print("Weather data decoded successfully: \(String(describing: weatherData?.current.temperature))")
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                weatherData = try decoder.decode(WeatherData.self, from: data)
+                
+                // Validate data
+                guard let _ = weatherData?.current.temperature,
+                      !weatherData!.daily.forecasts.isEmpty,
+                      !weatherData!.hourly.forecasts.isEmpty else {
+                    error = AppError.noWeatherData
+                    return
+                }
+                
+                error = nil
+                print("Weather data decoded successfully: \(String(describing: weatherData?.current.temperature))")
+            } catch {
+                print("Decoding error: \(error)")
+                self.error = AppError.networkError(error)
+            }
         } catch {
-            print("Error fetching weather: \(error)")
+            print("Network error: \(error)")
             self.error = AppError.networkError(error)
         }
     }
@@ -71,10 +81,12 @@ class WeatherManager: ObservableObject {
         let queryItems = [
             URLQueryItem(name: "latitude", value: String(location.coordinate.latitude)),
             URLQueryItem(name: "longitude", value: String(location.coordinate.longitude)),
-            URLQueryItem(name: "current", value: "temperature,relative_humidity,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl"),
-            URLQueryItem(name: "hourly", value: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m"),
-            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max"),
-            URLQueryItem(name: "timezone", value: "auto")
+            URLQueryItem(name: "current", value: "temperature,relative_humidity,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl,is_day,precipitation,cloud_cover"),
+            URLQueryItem(name: "hourly", value: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day,precipitation_probability"),
+            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max,precipitation_sum"),
+            URLQueryItem(name: "timezone", value: "auto"),
+            URLQueryItem(name: "forecast_days", value: "7"),
+            URLQueryItem(name: "past_days", value: "1")  // Include past day for better context
         ]
         
         urlComponents.queryItems = queryItems

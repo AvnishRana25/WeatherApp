@@ -18,10 +18,28 @@ struct DailyForecastView: View {
                     }
                 } else if let weather = weatherManager.weatherData {
                     List {
-                        ForEach(weather.daily.forecasts) { day in
-                            DailyWeatherCell(daily: day)
-                                .listRowInsets(EdgeInsets())
-                                .padding(.vertical, 8)
+                        Section {
+                            ForEach(weather.daily.forecasts) { day in
+                                DailyWeatherCell(daily: day)
+                                    .listRowInsets(EdgeInsets())
+                                    .padding(.vertical, 8)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        // Future expansion: Show detailed view
+                                    }
+                            }
+                        } header: {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("7-Day Forecast")
+                                    .font(.headline)
+                                    .textCase(nil)
+                                    .foregroundColor(.primary)
+                                
+                                Text("Updated \(formatUpdateTime(weather.current.time))")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, 8)
                         }
                     }
                     .listStyle(.plain)
@@ -37,5 +55,14 @@ struct DailyForecastView: View {
             }
             .navigationTitle("Daily Forecast")
         }
+    }
+    
+    private func formatUpdateTime(_ timeString: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
+        guard let date = formatter.date(from: timeString) else { return "" }
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }

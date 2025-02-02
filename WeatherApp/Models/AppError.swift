@@ -6,6 +6,8 @@ enum AppError: Error, LocalizedError {
     case invalidResponse
     case noWeatherData
     case invalidAPIKey
+    case decodingError(String)
+    case emptyData
     
     var errorDescription: String? {
         switch self {
@@ -19,6 +21,10 @@ enum AppError: Error, LocalizedError {
             return "Unable to fetch weather data."
         case .invalidAPIKey:
             return "Invalid API key. Please check your API key and try again."
+        case .decodingError(let message):
+            return "Error processing weather data: \(message)"
+        case .emptyData:
+            return "No weather data available for this location."
         }
     }
     
@@ -32,6 +38,10 @@ enum AppError: Error, LocalizedError {
             return "Pull down to refresh or try again later."
         case .invalidAPIKey:
             return "Please ensure your API key is valid and activated."
+        case .decodingError:
+            return "Please check your internet connection and try again."
+        case .emptyData:
+            return "Please check your internet connection and try again."
         }
     }
 }

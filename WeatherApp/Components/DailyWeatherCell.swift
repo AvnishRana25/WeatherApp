@@ -1,32 +1,38 @@
 import SwiftUI
 
 struct DailyWeatherCell: View {
-    let daily: WeatherData.Daily
+    let daily: WeatherData.DailyForecast
     @EnvironmentObject var settingsManager: SettingsManager
     
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(formatDay(daily.dt))
+                Text(formatDay(daily.time))
                     .font(.headline)
                 
-                Text(daily.weather.first?.description.capitalized ?? "")
+                Text(daily.weather.description.capitalized)
                     .font(.caption)
                     .foregroundColor(.secondary)
+                
+                if daily.precipitationProbability > 0 {
+                    Text("\(daily.precipitationProbability)% chance of precipitation")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
             }
             
             Spacer()
             
-            Image(systemName: getWeatherIcon(daily.weather.first?.main ?? ""))
+            Image(systemName: getWeatherIcon(daily.weather.main))
                 .font(.title2)
                 .symbolEffect(.bounce)
                 .frame(width: 50)
             
             HStack(spacing: 16) {
-                Text("\(formatTemperature(daily.temp.max))°")
+                Text("\(formatTemperature(daily.tempMax))°")
                     .font(.headline)
                 
-                Text("\(formatTemperature(daily.temp.min))°")
+                Text("\(formatTemperature(daily.tempMin))°")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -37,9 +43,10 @@ struct DailyWeatherCell: View {
         .hoverEffect()
     }
     
-    private func formatDay(_ timestamp: Int) -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+    private func formatDay(_ timeString: String) -> String {
         let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let date = formatter.date(from: timeString) else { return "" }
         formatter.dateFormat = "EEEE"
         return formatter.string(from: date)
     }
