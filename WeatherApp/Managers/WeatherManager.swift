@@ -65,8 +65,18 @@ class WeatherManager: ObservableObject {
                 
                 error = nil
                 print("Weather data decoded successfully: \(String(describing: weatherData?.current.temperature))")
+            } catch let decodingError as DecodingError {
+                print("Decoding error: \(decodingError)")
+                switch decodingError {
+                case .keyNotFound(let key, _):
+                    self.error = AppError.decodingError("Missing key: \(key.stringValue)")
+                case .typeMismatch(_, let context):
+                    self.error = AppError.decodingError("Type mismatch: \(context.debugDescription)")
+                default:
+                    self.error = AppError.decodingError(decodingError.localizedDescription)
+                }
             } catch {
-                print("Decoding error: \(error)")
+                print("Network error: \(error)")
                 self.error = AppError.networkError(error)
             }
         } catch {
@@ -81,7 +91,7 @@ class WeatherManager: ObservableObject {
         let queryItems = [
             URLQueryItem(name: "latitude", value: String(location.coordinate.latitude)),
             URLQueryItem(name: "longitude", value: String(location.coordinate.longitude)),
-            URLQueryItem(name: "current", value: "temperature,relative_humidity,weather_code,wind_speed_10m,wind_direction_10m,is_day"),
+            URLQueryItem(name: "current", value: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day,pressure_msl,visibility,cloud_cover,uv_index"),
             URLQueryItem(name: "hourly", value: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day,precipitation_probability"),
             URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max"),
             URLQueryItem(name: "timezone", value: "auto"),

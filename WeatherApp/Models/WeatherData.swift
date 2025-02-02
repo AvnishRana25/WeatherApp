@@ -12,36 +12,40 @@ struct WeatherData: Decodable, Equatable {
     // MARK: - Current Weather
     struct Current: Codable, Equatable {
         let time: String
-        let temperature: Double
-        let relativeHumidity: Int
+        let temperature2m: Double
+        let relativeHumidity2m: Int
         let weatherCode: Int
         let windSpeed10m: Double
         let windDirection10m: Int
-        let isDay: Int?
-        let pressure: Double
+        let isDay: Int
+        let pressureMsl: Double
         let visibility: Int
-        let clouds: Int
+        let cloudCover: Int
+        let uvIndex: Double
         
         enum CodingKeys: String, CodingKey {
             case time
-            case temperature = "temperature_2m"
-            case relativeHumidity = "relative_humidity_2m"
+            case temperature2m = "temperature_2m"
+            case relativeHumidity2m = "relative_humidity_2m"
             case weatherCode = "weather_code"
             case windSpeed10m = "wind_speed_10m"
             case windDirection10m = "wind_direction_10m"
             case isDay = "is_day"
-            case pressure = "pressure_msl"
+            case pressureMsl = "pressure_msl"
             case visibility
-            case clouds = "cloud_cover"
+            case cloudCover = "cloud_cover"
+            case uvIndex = "uv_index"
         }
         
         var weather: Weather { Weather(code: weatherCode) }
         
         // Add computed properties to match WeatherDetailsGrid usage
-        var temp: Double { temperature }
-        var humidity: Int { relativeHumidity }
+        var temperature: Double { temperature2m }
+        var humidity: Int { relativeHumidity2m }
         var windSpeed: Double { windSpeed10m }
-        var uvIndex: Double { 0.0 }  // Default value since it's not in current weather
+        var pressure: Double { pressureMsl }
+        var clouds: Int { cloudCover }
+        var uvIndex: Double { uvIndex }  // Direct property access
     }
     
     // MARK: - Hourly Forecast
