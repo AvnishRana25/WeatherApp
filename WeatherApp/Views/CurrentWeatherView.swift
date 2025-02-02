@@ -20,11 +20,8 @@ struct CurrentWeatherView: View {
                         VStack(spacing: 15) {
                             // Location Header
                             VStack(spacing: 4) {
-                                HStack(spacing: 8) {
+                                HStack {
                                     Spacer()
-                                    Image(systemName: "location.fill")
-                                        .foregroundColor(ColorTheme.primary)
-                                        .font(.system(size: 24))
                                     Text(weatherManager.locationName ?? "Current Location")
                                         .font(.system(size: 28, weight: .bold))
                                         .foregroundColor(.white)
