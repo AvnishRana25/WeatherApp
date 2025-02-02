@@ -9,56 +9,111 @@ struct CurrentWeatherView: View {
         NavigationView {
             ScrollView {
                 if weatherManager.isLoading && weatherManager.weatherData == nil {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .padding(.top, 100)
+                    LoadingView()
                 } else if let error = weatherManager.error as? AppError {
                     ErrorView(error: error) {
-                        Task {
-                            await weatherManager.refreshWeather()
-                        }
+                        Task { await weatherManager.refreshWeather() }
                     }
-                    .padding()
                 } else if let weather = weatherManager.weatherData {
-                    VStack(spacing: 20) {
-                        WeatherHeaderView(weather: weather.current)
-                            .transition(.moveAndFade)
+                    VStack(spacing: 25) {
+                        // Location and Current Weather
+                        VStack(spacing: 15) {
+                            Text(weatherManager.locationName ?? "Current Location")
+                                .font(.title2)
+                                .fontWeight(.medium)
+                                .foregroundColor(ColorTheme.text)
+                            
+                            WeatherHeaderView(weather: weather.current)
+                                .transition(.moveAndFade)
+                        }
+                        .padding()
+                        .background(ColorTheme.cardBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .shadow(color: ColorTheme.primary.opacity(0.1), radius: 10)
                         
+                        // Weather Details Grid
                         WeatherDetailsGrid(weather: weather.current)
                             .transition(.scale)
+                            .padding(.horizontal)
                         
+                        // Hourly Forecast
                         if !weather.hourly.forecasts.isEmpty {
-                            HourlyPreviewView(hourlyData: Array(weather.hourly.forecasts.prefix(24)))
-                                .transition(.slide)
+                            VStack(alignment: .leading) {
+                                Text("Today's Forecast")
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(ColorTheme.text)
+                                    .padding(.horizontal)
+                                
+                                HourlyPreviewView(hourlyData: Array(weather.hourly.forecasts.prefix(24)))
+                                    .transition(.slide)
+                            }
+                            .padding()
+                            .background(ColorTheme.cardBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .shadow(color: ColorTheme.primary.opacity(0.1), radius: 10)
                         }
                     }
                     .padding()
                     .overlay {
                         if weatherManager.isLoading {
-                            ZStack {
-                                Color.black.opacity(0.1)
-                                    .ignoresSafeArea()
-                                ProgressView()
-                                    .scaleEffect(1.5)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .background(.ultraThinMaterial)
-                            }
+                            LoadingOverlay()
                         }
                     }
                 } else {
-                    Text("No weather data available")
-                        .foregroundColor(.secondary)
-                        .padding(.top, 100)
+                    EmptyStateView()
                 }
             }
+            .background(ColorTheme.background)
             .refreshable {
                 isRefreshing = true
                 await weatherManager.refreshWeather()
                 isRefreshing = false
             }
-            .navigationTitle("Current Weather")
+            .navigationTitle("Weather")
             .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weatherManager.weatherData)
         }
+    }
+}
+
+struct LoadingView: View {
+    var body: some View {
+        VStack {
+            ProgressView()
+                .scaleEffect(1.5)
+                .tint(ColorTheme.primary)
+            Text("Loading weather data...")
+                .foregroundColor(ColorTheme.textSecondary)
+                .padding(.top)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.top, 100)
+    }
+}
+
+struct LoadingOverlay: View {
+    var body: some View {
+        ZStack {
+            ColorTheme.background.opacity(0.8)
+                .ignoresSafeArea()
+            ProgressView()
+                .scaleEffect(1.5)
+                .tint(ColorTheme.primary)
+        }
+        .background(.ultraThinMaterial)
+    }
+}
+
+struct EmptyStateView: View {
+    var body: some View {
+        VStack(spacing: 15) {
+            Image(systemName: "cloud.sun.fill")
+                .font(.system(size: 50))
+                .foregroundColor(ColorTheme.secondary)
+            Text("No weather data available")
+                .font(.headline)
+                .foregroundColor(ColorTheme.textSecondary)
+        }
+        .padding(.top, 100)
     }
 }

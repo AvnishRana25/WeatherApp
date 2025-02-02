@@ -5,14 +5,33 @@ class WeatherManager: ObservableObject {
     @Published var weatherData: WeatherData?
     @Published var isLoading = false
     @Published var error: Error?
+    @Published var locationName: String?
     private let locationManager = LocationManager()
+    private let geocoder = CLGeocoder()
     
     init() {
         // Initialize and start fetching weather data when location is available
         locationManager.onLocationUpdate = { [weak self] location in
             Task {
+                await self?.updateLocationName(for: location)
                 await self?.refreshWeather()
             }
+        }
+    }
+    
+    @MainActor
+    private func updateLocationName(for location: CLLocation) async {
+        do {
+            let placemarks = try await geocoder.reverseGeocodeLocation(location)
+            if let placemark = placemarks.first {
+                if let locality = placemark.locality {
+                    locationName = locality
+                } else if let name = placemark.name {
+                    locationName = name
+                }
+            }
+        } catch {
+            print("Geocoding error: \(error)")
         }
     }
     
