@@ -8,6 +8,7 @@ struct WeatherData: Decodable, Equatable {
     // MARK: - Current Weather
     struct Current: Codable, Equatable {
         let temp: Double
+        let feelsLike: Double // Added missing property
         let humidity: Int
         let windSpeed: Double
         let pressure: Int
@@ -18,32 +19,35 @@ struct WeatherData: Decodable, Equatable {
         
         enum CodingKeys: String, CodingKey {
             case temp, humidity, pressure, visibility, clouds, weather
-            case windSpeed = "wind_speed"   
+            case windSpeed = "wind_speed"
             case uvIndex = "uvi"
+            case feelsLike = "feels_like" // Maps to OpenWeather's "feels_like"
         }
     }
     
     // MARK: - Hourly Forecast
-    // WeatherData.swift
     struct Hourly: Codable, Equatable, Identifiable {
-        let id: Int      // Maps to API's "dt" (timestamp)
+        let dt: Int      // Timestamp from JSON
         let temp: Double
         let weather: [Weather]
-
+        
+        var id: Int { dt } // Computed for Identifiable
+        
         enum CodingKeys: String, CodingKey {
-            case id = "dt"   // Explicit mapping
-            case temp, weather
+            case dt, temp, weather
         }
     }
 
+    // MARK: - Daily Forecast
     struct Daily: Codable, Equatable, Identifiable {
-        let id: Int      // Maps to API's "dt" (timestamp)
+        let dt: Int      // Timestamp from JSON
         let temp: DailyTemp
         let weather: [Weather]
-
+        
+        var id: Int { dt } // Computed for Identifiable
+        
         enum CodingKeys: String, CodingKey {
-            case id = "dt"   // Explicit mapping
-            case temp, weather
+            case dt, temp, weather
         }
     }
     

@@ -10,6 +10,7 @@ struct WeatherHeaderView: View {
                 .font(.system(size: 72, weight: .bold))
                 .symbolEffect(.bounce)
             
+            // "feelsLike" is now properly mapped
             Text("Feels like \(formatTemperature(weather.feelsLike))°")
                 .font(.title3)
                 .foregroundColor(.secondary)
