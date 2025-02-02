@@ -6,24 +6,20 @@ struct WeatherHeaderView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            Text("\(formatTemperature(weather.temp))°")
+            Text("\(formatTemperature(weather.temperature))°")
                 .font(.system(size: 72, weight: .bold))
                 .symbolEffect(.bounce)
             
-            // "feelsLike" is now properly mapped
-            Text("Feels like \(formatTemperature(weather.feelsLike))°")
-                .font(.title3)
-                .foregroundColor(.secondary)
-            
-            Text(weather.weather.first?.description.capitalized ?? "")
+            // Use temperature directly since feelsLike is not available
+            Text(weather.weather.description.capitalized)
                 .font(.title2)
-                .symbolEffect(.bounce)
+                .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding()
         .background(Color.secondary.opacity(0.1))
         .cornerRadius(15)
-        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weather.temp)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weather.temperature)
     }
     
     private func formatTemperature(_ temp: Double) -> String {
