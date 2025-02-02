@@ -2,18 +2,31 @@ import SwiftUI
 
 struct DailyForecastView: View {
     @EnvironmentObject var weatherManager: WeatherManager
-    @EnvironmentObject var settingsManager: SettingsManager
     
     var body: some View {
-        List {
-            if let weather = weatherManager.weatherData {
-                ForEach(weather.daily) { day in
-                    DailyWeatherCell(daily: day)
-                        .listRowInsets(EdgeInsets())
-                        .padding(.vertical, 8)
+        Group {
+            if weatherManager.isLoading {
+                ProgressView()
+                    .scaleEffect(1.5)
+            } else if let error = weatherManager.error as? AppError {
+                ErrorView(error: error) {
+                    Task {
+                        await weatherManager.refreshWeather()
+                    }
                 }
+            } else if let weather = weatherManager.weatherData {
+                List {
+                    ForEach(weather.daily) { day in
+                        DailyWeatherCell(daily: day)
+                            .listRowInsets(EdgeInsets())
+                            .padding(.vertical, 8)
+                    }
+                }
+                .listStyle(.plain)
+            } else {
+                Text("No weather data available")
+                    .foregroundColor(.secondary)
             }
         }
-        .listStyle(.plain)
     }
 }

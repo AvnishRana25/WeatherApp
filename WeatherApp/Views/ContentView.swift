@@ -34,6 +34,10 @@ struct ContentView: View {
                         Label("Settings", systemImage: "gear")
                     }
             }
+            .task {
+                // Initial weather fetch
+                await weatherManager.refreshWeather()
+            }
         }
     }
 }

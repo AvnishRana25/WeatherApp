@@ -5,6 +5,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     @Published var location: CLLocation?
     @Published var isAuthorized = false
+    var onLocationUpdate: ((CLLocation) -> Void)?
     
     override init() {
         super.init()
@@ -26,7 +27,9 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        location = locations.last
+        guard let location = locations.last else { return }
+        self.location = location
+        onLocationUpdate?(location)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
