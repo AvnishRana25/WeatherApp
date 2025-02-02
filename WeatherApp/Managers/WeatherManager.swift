@@ -28,10 +28,14 @@ class WeatherManager: ObservableObject {
                     locationName = locality
                 } else if let name = placemark.name {
                     locationName = name
+                } else if let area = placemark.administrativeArea {
+                    locationName = area
                 }
             }
+            print("Location name updated: \(locationName ?? "Unknown")")  // Debug print
         } catch {
             print("Geocoding error: \(error)")
+            locationName = "Current Location"  // Fallback value
         }
     }
     
@@ -41,6 +45,9 @@ class WeatherManager: ObservableObject {
             error = AppError.locationNotAuthorized
             return
         }
+        
+        // Update location name first
+        await updateLocationName(for: location)
         
         isLoading = true
         defer { isLoading = false }
