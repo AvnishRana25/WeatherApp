@@ -32,9 +32,9 @@ struct CurrentWeatherView: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .center)
                             }
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 32)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity, maxHeight: 60)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal)
                             .background(Color.black.opacity(0.5))
                             .cornerRadius(10)
                             
