@@ -17,7 +17,7 @@ struct HourlyForecastView: View {
             } else if let weather = weatherManager.weatherData {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 20) {
-                        ForEach(weather.hourly) { hour in
+                        ForEach(weather.hourly.forecasts) { hour in
                             HourlyWeatherCell(hourly: hour)
                                 .transition(.scale.combined(with: .slide))
                         }

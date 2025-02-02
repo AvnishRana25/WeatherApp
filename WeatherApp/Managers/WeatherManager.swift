@@ -2,7 +2,6 @@ import Foundation
 import CoreLocation
 
 class WeatherManager: ObservableObject {
-    private let apiKey = "0d2dd6d9fd0f44c7784e7acd9b397a41"
     @Published var weatherData: WeatherData?
     @Published var isLoading = false
     @Published var error: Error?
@@ -29,6 +28,8 @@ class WeatherManager: ObservableObject {
         
         do {
             let url = getWeatherURL(for: location)
+            print("Requesting URL: \(url.absoluteString)") // Debug URL
+            
             var request = URLRequest(url: url)
             request.cachePolicy = .reloadIgnoringLocalCacheData
             
@@ -39,17 +40,12 @@ class WeatherManager: ObservableObject {
                 return
             }
             
-            // Debug response
             print("API Response Status: \(httpResponse.statusCode)")
-            if let responseString = String(data: data, encoding: .utf8) {
-                print("API Response: \(responseString)")
-            }
             
             if httpResponse.statusCode != 200 {
-                if let errorJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                   let message = errorJson["message"] as? String {
-                    print("API Error: \(message)")
-                    error = AppError.networkError(NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: message]))
+                if let errorString = String(data: data, encoding: .utf8) {
+                    print("API Error: \(errorString)")
+                    error = AppError.networkError(NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorString]))
                 } else {
                     error = AppError.invalidResponse
                 }
@@ -62,19 +58,26 @@ class WeatherManager: ObservableObject {
             error = nil
             
             // Debug successful decode
-            print("Weather data decoded successfully: \(String(describing: weatherData?.current.temp))")
+            print("Weather data decoded successfully: \(String(describing: weatherData?.current.temperature))")
         } catch {
-            print("Decoding error: \(error)")
+            print("Error fetching weather: \(error)")
             self.error = AppError.networkError(error)
         }
     }
 
     private func getWeatherURL(for location: CLLocation) -> URL {
-        // Using v2.5 of the API with correct parameters
-        let urlString = "https://api.openweathermap.org/data/2.5/onecall?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&appid=\(apiKey)&units=metric&exclude=minutely,alerts"
-        guard let url = URL(string: urlString) else {
-            fatalError("Invalid URL")
-        }
-        return url
+        var urlComponents = URLComponents(string: "https://api.open-meteo.com/v1/forecast")!
+        
+        let queryItems = [
+            URLQueryItem(name: "latitude", value: String(location.coordinate.latitude)),
+            URLQueryItem(name: "longitude", value: String(location.coordinate.longitude)),
+            URLQueryItem(name: "current", value: "temperature,relative_humidity,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl"),
+            URLQueryItem(name: "hourly", value: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m"),
+            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max"),
+            URLQueryItem(name: "timezone", value: "auto")
+        ]
+        
+        urlComponents.queryItems = queryItems
+        return urlComponents.url!
     }
 }

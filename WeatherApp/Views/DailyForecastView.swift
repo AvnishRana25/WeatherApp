@@ -18,7 +18,7 @@ struct DailyForecastView: View {
                     }
                 } else if let weather = weatherManager.weatherData {
                     List {
-                        ForEach(weather.daily) { day in
+                        ForEach(weather.daily.forecasts) { day in
                             DailyWeatherCell(daily: day)
                                 .listRowInsets(EdgeInsets())
                                 .padding(.vertical, 8)
