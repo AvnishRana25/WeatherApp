@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var locationManager: LocationManager
     @EnvironmentObject var weatherManager: WeatherManager
+    @StateObject private var locationManager = LocationManager()
     
     var body: some View {
         NavigationStack {
@@ -35,8 +35,21 @@ struct ContentView: View {
                     }
             }
             .task {
-                // Initial weather fetch
-                await weatherManager.refreshWeather()
+                // Initial weather fetch with retry
+                await fetchWeatherWithRetry()
+            }
+        }
+        .environmentObject(locationManager)
+    }
+    
+    private func fetchWeatherWithRetry() async {
+        for attempt in 1...3 {
+            await weatherManager.refreshWeather()
+            if weatherManager.weatherData != nil {
+                break
+            }
+            if attempt < 3 {
+                try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 second delay
             }
         }
     }

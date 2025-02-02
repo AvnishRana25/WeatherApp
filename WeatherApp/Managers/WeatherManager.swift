@@ -29,25 +29,52 @@ class WeatherManager: ObservableObject {
         
         do {
             let url = getWeatherURL(for: location)
-            let (data, response) = try await URLSession.shared.data(from: url)
+            var request = URLRequest(url: url)
+            request.cachePolicy = .reloadIgnoringLocalCacheData
             
-            guard let httpResponse = response as? HTTPURLResponse,
-                  httpResponse.statusCode == 200 else {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
                 error = AppError.invalidResponse
                 return
             }
             
+            // Debug response
+            print("API Response Status: \(httpResponse.statusCode)")
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("API Response: \(responseString)")
+            }
+            
+            if httpResponse.statusCode != 200 {
+                if let errorJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let message = errorJson["message"] as? String {
+                    print("API Error: \(message)")
+                    error = AppError.networkError(NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: message]))
+                } else {
+                    error = AppError.invalidResponse
+                }
+                return
+            }
+            
             let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
             weatherData = try decoder.decode(WeatherData.self, from: data)
             error = nil
+            
+            // Debug successful decode
+            print("Weather data decoded successfully: \(String(describing: weatherData?.current.temp))")
         } catch {
+            print("Decoding error: \(error)")
             self.error = AppError.networkError(error)
-            print("Error fetching weather data: \(error)")
         }
     }
 
     private func getWeatherURL(for location: CLLocation) -> URL {
-        // Add exclude parameter to get only needed data and reduce response size
-        URL(string: "https://api.openweathermap.org/data/3.0/onecall?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&appid=\(apiKey)&units=metric&exclude=minutely,alerts")!
+        // Using v2.5 of the API with correct parameters
+        let urlString = "https://api.openweathermap.org/data/2.5/onecall?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&appid=\(apiKey)&units=metric&exclude=minutely,alerts"
+        guard let url = URL(string: urlString) else {
+            fatalError("Invalid URL")
+        }
+        return url
     }
 }

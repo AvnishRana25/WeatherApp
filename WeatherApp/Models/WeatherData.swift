@@ -1,60 +1,85 @@
 import Foundation
 
 struct WeatherData: Decodable, Equatable {
+    let lat: Double
+    let lon: Double
+    let timezone: String
+    let timezoneOffset: Int
     let current: Current
     let hourly: [Hourly]
     let daily: [Daily]
     
     // MARK: - Current Weather
     struct Current: Codable, Equatable {
+        let dt: Int
+        let sunrise: Int?
+        let sunset: Int?
         let temp: Double
-        let feelsLike: Double // Added missing property
-        let humidity: Int
-        let windSpeed: Double
+        let feelsLike: Double
         let pressure: Int
-        let uvIndex: Double
-        let visibility: Int
+        let humidity: Int
+        let dewPoint: Double?
+        let uvi: Double
         let clouds: Int
+        let visibility: Int
+        let windSpeed: Double
+        let windDeg: Int?
         let weather: [Weather]
-        
-        enum CodingKeys: String, CodingKey {
-            case temp, humidity, pressure, visibility, clouds, weather
-            case windSpeed = "wind_speed"
-            case uvIndex = "uvi"
-            case feelsLike = "feels_like" // Maps to OpenWeather's "feels_like"
-        }
     }
     
     // MARK: - Hourly Forecast
     struct Hourly: Codable, Equatable, Identifiable {
-        let dt: Int      // Timestamp from JSON
+        let dt: Int
         let temp: Double
+        let feelsLike: Double
+        let pressure: Int
+        let humidity: Int
+        let dewPoint: Double?
+        let uvi: Double
+        let clouds: Int
+        let visibility: Int
+        let windSpeed: Double
+        let windDeg: Int?
         let weather: [Weather]
+        let pop: Double?
         
-        var id: Int { dt } // Computed for Identifiable
-        
-        enum CodingKeys: String, CodingKey {
-            case dt, temp, weather
-        }
-    }
-
-    // MARK: - Daily Forecast
-    struct Daily: Codable, Equatable, Identifiable {
-        let dt: Int      // Timestamp from JSON
-        let temp: DailyTemp
-        let weather: [Weather]
-        
-        var id: Int { dt } // Computed for Identifiable
-        
-        enum CodingKeys: String, CodingKey {
-            case dt, temp, weather
-        }
+        var id: Int { dt }
     }
     
-    // MARK: - Daily Temperature
-    struct DailyTemp: Codable, Equatable {
-        let min: Double
-        let max: Double
+    // MARK: - Daily Forecast
+    struct Daily: Codable, Equatable, Identifiable {
+        let dt: Int
+        let sunrise: Int?
+        let sunset: Int?
+        let temp: Temp
+        let feelsLike: FeelsLike?
+        let pressure: Int
+        let humidity: Int
+        let dewPoint: Double?
+        let windSpeed: Double
+        let windDeg: Int?
+        let weather: [Weather]
+        let clouds: Int
+        let pop: Double?
+        let uvi: Double
+        
+        var id: Int { dt }
+        
+        struct Temp: Codable, Equatable {
+            let day: Double
+            let min: Double
+            let max: Double
+            let night: Double
+            let eve: Double
+            let morn: Double
+        }
+        
+        struct FeelsLike: Codable, Equatable {
+            let day: Double
+            let night: Double
+            let eve: Double
+            let morn: Double
+        }
     }
     
     // MARK: - Weather Condition
