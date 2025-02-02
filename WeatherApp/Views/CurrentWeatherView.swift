@@ -39,11 +39,10 @@ struct CurrentWeatherView: View {
                             WeatherHeaderView(weather: weather.current)
                                 .transition(.moveAndFade)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: 60)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal)
-                        .background(Color.black.opacity(0.5))
-                        .cornerRadius(10)
+                        .padding()
+                        .background(ColorTheme.cardBackground.opacity(0.8))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .shadow(color: ColorTheme.primary.opacity(0.3), radius: 10, x: 0, y: 2)
                         
                         // Weather Details Grid
                         WeatherDetailsGrid(weather: weather.current)
@@ -56,7 +55,7 @@ struct CurrentWeatherView: View {
                                 Text("Today's Forecast")
                                     .font(.title3)
                                     .fontWeight(.semibold)
-                                    .foregroundColor(Color.secondary)
+                                    .foregroundColor(ColorTheme.text)
                                     .padding(.horizontal)
                                 
                                 HourlyPreviewView(hourlyData: Array(weather.hourly.forecasts.prefix(24)))
@@ -97,7 +96,7 @@ struct LoadingView: View {
                 .scaleEffect(1.5)
                 .tint(ColorTheme.primary)
             Text("Loading weather data...")
-                .foregroundColor(.secondary)
+                .foregroundColor(ColorTheme.textSecondary)
                 .padding(.top)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -123,10 +122,10 @@ struct EmptyStateView: View {
         VStack(spacing: 15) {
             Image(systemName: "cloud.sun.fill")
                 .font(.system(size: 50))
-                .foregroundColor(Color.secondary)
+                .foregroundColor(ColorTheme.secondary)
             Text("No weather data available")
                 .font(.headline)
-                .foregroundColor(Color.secondary)
+                .foregroundColor(ColorTheme.textSecondary)
         }
         .padding(.top, 100)
     }
