@@ -21,6 +21,7 @@ struct CurrentWeatherView: View {
                             // Location Header
                             VStack(spacing: 4) {
                                 HStack(spacing: 8) {
+                                    Spacer()
                                     Image(systemName: "location.fill")
                                         .foregroundColor(ColorTheme.primary)
                                         .font(.system(size: 24))
@@ -29,8 +30,8 @@ struct CurrentWeatherView: View {
                                         .foregroundColor(.white)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.75)
+                                    Spacer()
                                 }
-                                .frame(maxWidth: .infinity, alignment: .center)
                             }
                             .frame(maxWidth: .infinity, maxHeight: 60)
                             .padding(.vertical, 8)
