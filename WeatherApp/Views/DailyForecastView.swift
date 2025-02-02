@@ -7,7 +7,7 @@ struct DailyForecastView: View {
     var body: some View {
         NavigationView {
             Group {
-                if weatherManager.isLoading {
+                if weatherManager.isLoading && weatherManager.weatherData == nil {
                     ProgressView()
                         .scaleEffect(1.5)
                 } else if let error = weatherManager.error as? AppError {
@@ -48,6 +48,18 @@ struct DailyForecastView: View {
                         await weatherManager.refreshWeather()
                         isRefreshing = false
                     }
+                    .overlay {
+                        if weatherManager.isLoading {
+                            ZStack {
+                                Color.black.opacity(0.1)
+                                    .ignoresSafeArea()
+                                ProgressView()
+                                    .scaleEffect(1.5)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .background(.ultraThinMaterial)
+                            }
+                        }
+                    }
                 } else {
                     Text("No weather data available")
                         .foregroundColor(.secondary)
@@ -60,7 +72,10 @@ struct DailyForecastView: View {
     private func formatUpdateTime(_ timeString: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
-        guard let date = formatter.date(from: timeString) else { return "" }
+        guard let date = formatter.date(from: timeString) else {
+            print("Error formatting date: \(timeString)")
+            return "Recently Updated"
+        }
         formatter.dateStyle = .none
         formatter.timeStyle = .short
         return formatter.string(from: date)

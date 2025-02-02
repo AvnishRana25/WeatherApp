@@ -17,11 +17,9 @@ struct WeatherData: Decodable, Equatable {
         let weatherCode: Int
         let windSpeed10m: Double
         let windDirection10m: Int
-        let pressureMsl: Double?
+        let isDay: Int?
         
-        var weather: [Weather] {
-            [Weather(code: weatherCode)]
-        }
+        var weather: Weather { Weather(code: weatherCode) }
     }
     
     // MARK: - Hourly Forecast
@@ -32,6 +30,8 @@ struct WeatherData: Decodable, Equatable {
         let weatherCode: [Int]
         let windSpeed10m: [Double]
         let windDirection10m: [Int]
+        let isDay: [Int]
+        let precipitationProbability: [Int]
         
         var forecasts: [HourlyForecast] {
             time.indices.map { i in
@@ -41,7 +41,9 @@ struct WeatherData: Decodable, Equatable {
                     humidity: relativeHumidity2m[i],
                     weatherCode: weatherCode[i],
                     windSpeed: windSpeed10m[i],
-                    windDirection: windDirection10m[i]
+                    windDirection: windDirection10m[i],
+                    isDay: isDay[i],
+                    precipitationProbability: precipitationProbability[i]
                 )
             }
         }
@@ -75,19 +77,21 @@ struct WeatherData: Decodable, Equatable {
     }
     
     // MARK: - Helper Models
-    struct HourlyForecast: Identifiable {
+    struct HourlyForecast: Identifiable, Equatable {
         let time: String
         let temp: Double
         let humidity: Int
         let weatherCode: Int
         let windSpeed: Double
         let windDirection: Int
+        let isDay: Int
+        let precipitationProbability: Int
         
         var id: String { time }
         var weather: Weather { Weather(code: weatherCode) }
     }
     
-    struct DailyForecast: Identifiable {
+    struct DailyForecast: Identifiable, Equatable {
         let time: String
         let weatherCode: Int
         let tempMax: Double
@@ -144,7 +148,7 @@ enum WeatherCode {
         case 51, 53, 55, 61, 63, 65, 80, 81, 82: return "rain"
         case 71, 73, 75, 77, 85, 86: return "snow"
         case 95, 96, 99: return "thunderstorm"
-        default: return "unknown"
+        default: return "clouds"
         }
     }
 }

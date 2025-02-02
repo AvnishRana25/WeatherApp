@@ -15,9 +15,13 @@ struct DailyWeatherCell: View {
                     .foregroundColor(.secondary)
                 
                 if daily.precipitationProbability > 0 {
-                    Text("\(daily.precipitationProbability)% chance of precipitation")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
+                    HStack(spacing: 4) {
+                        Image(systemName: "drop.fill")
+                            .foregroundStyle(.blue)
+                        Text("\(daily.precipitationProbability)%")
+                    }
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
                 }
             }
             
@@ -68,6 +72,8 @@ struct DailyWeatherCell: View {
             return "cloud.snow.fill"
         case "thunderstorm":
             return "cloud.bolt.fill"
+        case "fog":
+            return "cloud.fog.fill"
         default:
             return "cloud.fill"
         }

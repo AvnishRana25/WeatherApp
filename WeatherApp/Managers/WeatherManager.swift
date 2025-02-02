@@ -81,12 +81,11 @@ class WeatherManager: ObservableObject {
         let queryItems = [
             URLQueryItem(name: "latitude", value: String(location.coordinate.latitude)),
             URLQueryItem(name: "longitude", value: String(location.coordinate.longitude)),
-            URLQueryItem(name: "current", value: "temperature,relative_humidity,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl,is_day,precipitation,cloud_cover"),
+            URLQueryItem(name: "current", value: "temperature,relative_humidity,weather_code,wind_speed_10m,wind_direction_10m,is_day"),
             URLQueryItem(name: "hourly", value: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day,precipitation_probability"),
-            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max,precipitation_sum"),
+            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max"),
             URLQueryItem(name: "timezone", value: "auto"),
-            URLQueryItem(name: "forecast_days", value: "7"),
-            URLQueryItem(name: "past_days", value: "1")  // Include past day for better context
+            URLQueryItem(name: "forecast_days", value: "7")
         ]
         
         urlComponents.queryItems = queryItems
