@@ -21,21 +21,27 @@ class WeatherManager: ObservableObject {
     
     @MainActor
     private func updateLocationName(for location: CLLocation) async {
+        print("Starting location name update for: \(location.coordinate)") // Debug print
         do {
             let placemarks = try await geocoder.reverseGeocodeLocation(location)
+            print("Received placemarks: \(placemarks)") // Debug print
             if let placemark = placemarks.first {
                 if let locality = placemark.locality {
                     locationName = locality
+                    print("Set location name to locality: \(locality)") // Debug print
                 } else if let name = placemark.name {
                     locationName = name
+                    print("Set location name to name: \(name)") // Debug print
                 } else if let area = placemark.administrativeArea {
                     locationName = area
+                    print("Set location name to area: \(area)") // Debug print
                 }
             }
-            print("Location name updated: \(locationName ?? "Unknown")")  // Debug print
+            print("Final location name: \(locationName ?? "nil")") // Debug print
         } catch {
             print("Geocoding error: \(error)")
             locationName = "Current Location"  // Fallback value
+            print("Set fallback location name") // Debug print
         }
     }
     

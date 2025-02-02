@@ -18,14 +18,19 @@ struct CurrentWeatherView: View {
                     VStack(spacing: 25) {
                         // Location and Current Weather
                         VStack(spacing: 15) {
-                            HStack {
+                            HStack(spacing: 8) {
                                 Image(systemName: "location.fill")
                                     .foregroundColor(ColorTheme.primary)
+                                    .font(.system(size: 20))
                                 Text(weatherManager.locationName ?? "Current Location")
                                     .font(.title2)
                                     .fontWeight(.semibold)
                                     .foregroundColor(ColorTheme.text)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.75)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 5)
                             .padding(.top, 5)
                             
                             WeatherHeaderView(weather: weather.current)
