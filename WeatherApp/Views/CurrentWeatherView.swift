@@ -28,8 +28,10 @@ struct CurrentWeatherView: View {
                         WeatherDetailsGrid(weather: weather.current)
                             .transition(.scale)
                         
-                        HourlyPreviewView(hourlyData: Array(weather.hourly.forecasts.prefix(24)))
-                            .transition(.slide)
+                        if !weather.hourly.forecasts.isEmpty {
+                            HourlyPreviewView(hourlyData: Array(weather.hourly.forecasts.prefix(24)))
+                                .transition(.slide)
+                        }
                     }
                     .padding()
                     .overlay {

@@ -5,10 +5,12 @@ struct HourlyForecastView: View {
     
     var body: some View {
         NavigationView {
-            Group {
+            ScrollView {
                 if weatherManager.isLoading && weatherManager.weatherData == nil {
                     ProgressView()
                         .scaleEffect(1.5)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding(.top, 100)
                 } else if let error = weatherManager.error as? AppError {
                     ErrorView(error: error) {
                         Task {
@@ -16,12 +18,20 @@ struct HourlyForecastView: View {
                         }
                     }
                 } else if let weather = weatherManager.weatherData {
-                    HourlyPreviewView(hourlyData: weather.hourly.forecasts)
-                        .padding()
+                    LazyVStack(spacing: 16) {
+                        ForEach(weather.hourly.forecasts) { hour in
+                            HourlyWeatherCell(hourly: hour)
+                                .padding(.horizontal)
+                        }
+                    }
+                    .padding(.vertical)
                 } else {
                     Text("No weather data available")
                         .foregroundColor(.secondary)
                 }
+            }
+            .refreshable {
+                await weatherManager.refreshWeather()
             }
             .navigationTitle("Hourly Forecast")
         }

@@ -33,9 +33,21 @@ struct WeatherData: Decodable, Equatable {
         let isDay: [Int]
         let precipitationProbability: [Int]
         
+        enum CodingKeys: String, CodingKey {
+            case time
+            case temperature2m = "temperature_2m"
+            case relativeHumidity2m = "relative_humidity_2m"
+            case weatherCode = "weather_code"
+            case windSpeed10m = "wind_speed_10m"
+            case windDirection10m = "wind_direction_10m"
+            case isDay = "is_day"
+            case precipitationProbability = "precipitation_probability"
+        }
+        
         var forecasts: [HourlyForecast] {
-            time.indices.map { i in
-                HourlyForecast(
+            var forecasts: [HourlyForecast] = []
+            for i in 0..<time.count {
+                forecasts.append(HourlyForecast(
                     time: time[i],
                     temp: temperature2m[i],
                     humidity: relativeHumidity2m[i],
@@ -44,8 +56,9 @@ struct WeatherData: Decodable, Equatable {
                     windDirection: windDirection10m[i],
                     isDay: isDay[i],
                     precipitationProbability: precipitationProbability[i]
-                )
+                ))
             }
+            return forecasts
         }
     }
     
@@ -58,11 +71,23 @@ struct WeatherData: Decodable, Equatable {
         let sunrise: [String]
         let sunset: [String]
         let uvIndexMax: [Double]
-        let precipitationProbabilityMax: [Int]
+        let precipitationProbability: [Int]
+        
+        enum CodingKeys: String, CodingKey {
+            case time
+            case weatherCode = "weather_code"
+            case temperature2mMax = "temperature_2m_max"
+            case temperature2mMin = "temperature_2m_min"
+            case sunrise
+            case sunset
+            case uvIndexMax = "uv_index_max"
+            case precipitationProbability = "precipitation_probability_max"
+        }
         
         var forecasts: [DailyForecast] {
-            time.indices.map { i in
-                DailyForecast(
+            var forecasts: [DailyForecast] = []
+            for i in 0..<time.count {
+                forecasts.append(DailyForecast(
                     time: time[i],
                     weatherCode: weatherCode[i],
                     tempMax: temperature2mMax[i],
@@ -70,9 +95,10 @@ struct WeatherData: Decodable, Equatable {
                     sunrise: sunrise[i],
                     sunset: sunset[i],
                     uvIndex: uvIndexMax[i],
-                    precipitationProbability: precipitationProbabilityMax[i]
-                )
+                    precipitationProbability: precipitationProbability[i]
+                ))
             }
+            return forecasts
         }
     }
     
@@ -106,7 +132,7 @@ struct WeatherData: Decodable, Equatable {
     }
     
     // MARK: - Weather Helper
-    struct Weather: Codable, Equatable {
+    struct Weather: Equatable {
         let code: Int
         
         var description: String {
