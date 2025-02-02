@@ -18,8 +18,30 @@ struct WeatherData: Decodable, Equatable {
         let windSpeed10m: Double
         let windDirection10m: Int
         let isDay: Int?
+        let pressure: Double
+        let visibility: Int
+        let clouds: Int
+        
+        enum CodingKeys: String, CodingKey {
+            case time
+            case temperature = "temperature_2m"
+            case relativeHumidity = "relative_humidity_2m"
+            case weatherCode = "weather_code"
+            case windSpeed10m = "wind_speed_10m"
+            case windDirection10m = "wind_direction_10m"
+            case isDay = "is_day"
+            case pressure = "pressure_msl"
+            case visibility
+            case clouds = "cloud_cover"
+        }
         
         var weather: Weather { Weather(code: weatherCode) }
+        
+        // Add computed properties to match WeatherDetailsGrid usage
+        var temp: Double { temperature }
+        var humidity: Int { relativeHumidity }
+        var windSpeed: Double { windSpeed10m }
+        var uvIndex: Double { 0.0 }  // Default value since it's not in current weather
     }
     
     // MARK: - Hourly Forecast
