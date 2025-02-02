@@ -26,7 +26,7 @@ struct CurrentWeatherView: View {
                                         .font(.system(size: 24))
                                     Text(weatherManager.locationName ?? "Current Location")
                                         .font(.system(size: 28, weight: .bold))
-                                        .foregroundColor(ColorTheme.text)
+                                        .foregroundColor(.white)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.75)
                                 }
@@ -35,11 +35,11 @@ struct CurrentWeatherView: View {
                                 // Optional: Add last updated time
                                 Text("Last Updated: \(Date().formatted(.dateTime.hour().minute()))")
                                     .font(.caption)
-                                    .foregroundColor(ColorTheme.textSecondary)
+                                    .foregroundColor(.white.opacity(0.8))
                             }
                             .padding(.vertical, 12)
                             .padding(.horizontal)
-                            .background(ColorTheme.cardBackground.opacity(0.95))
+                            .background(Color.black.opacity(0.5))
                             .cornerRadius(10)
                             
                             WeatherHeaderView(weather: weather.current)
