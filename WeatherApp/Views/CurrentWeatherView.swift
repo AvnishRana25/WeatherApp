@@ -19,28 +19,22 @@ struct CurrentWeatherView: View {
                         // Location and Current Weather
                         VStack(spacing: 15) {
                             // Location Header
-                            VStack(spacing: 4) {
-                                HStack(spacing: 8) {
-                                    Image(systemName: "location.fill")
-                                        .foregroundColor(ColorTheme.primary)
-                                        .font(.system(size: 24))
-                                    Text(weatherManager.locationName ?? "Current Location")
-                                        .font(.system(size: 28, weight: .bold))
-                                        .foregroundColor(.white)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.75)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                
-                                // Optional: Add last updated time
-                                Text("Last Updated: \(Date().formatted(.dateTime.hour().minute()))")
-                                    .font(.caption)
-                                    .foregroundColor(.white.opacity(0.8))
+                            HStack(spacing: 8) {
+                                Image(systemName: "location.fill")
+                                    .foregroundColor(ColorTheme.primary)
+                                    .font(.system(size: 24))
+                                Text(weatherManager.locationName ?? "Current Location")
+                                    .font(.system(size: 28, weight: .bold))
+                                    .foregroundColor(ColorTheme.text)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.75)
                             }
+                            .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.vertical, 12)
                             .padding(.horizontal)
-                            .background(Color.black.opacity(0.5))
-                            .cornerRadius(10)
+                            .background(ColorTheme.cardBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .shadow(color: ColorTheme.primary.opacity(0.1), radius: 10)
                             
                             WeatherHeaderView(weather: weather.current)
                                 .transition(.moveAndFade)
