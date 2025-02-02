@@ -18,33 +18,28 @@ struct CurrentWeatherView: View {
                     VStack(spacing: 25) {
                         // Location and Current Weather
                         VStack(spacing: 15) {
-                            // Debug Text to verify the location name
-                            Text("Debug: \(weatherManager.locationName ?? "nil")")
-                                .font(.caption)
-                                .foregroundColor(.red)
-                            
                             HStack(spacing: 8) {
                                 Image(systemName: "location.fill")
                                     .foregroundColor(ColorTheme.primary)
                                     .font(.system(size: 24))
                                 Text(weatherManager.locationName ?? "Current Location")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
+                                    .font(.system(size: 28, weight: .bold))
                                     .foregroundColor(ColorTheme.text)
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.75)
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.vertical, 12)
                             .padding(.horizontal)
-                            .padding(.top, 10)
+                            .background(ColorTheme.cardBackground.opacity(0.95))
                             
                             WeatherHeaderView(weather: weather.current)
                                 .transition(.moveAndFade)
                         }
                         .padding()
-                        .background(ColorTheme.cardBackground)
+                        .background(ColorTheme.cardBackground.opacity(0.8))
                         .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .shadow(color: ColorTheme.primary.opacity(0.1), radius: 10)
+                        .shadow(color: ColorTheme.primary.opacity(0.3), radius: 10, x: 0, y: 2)
                         
                         // Weather Details Grid
                         WeatherDetailsGrid(weather: weather.current)
