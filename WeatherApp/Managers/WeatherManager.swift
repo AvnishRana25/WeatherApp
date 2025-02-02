@@ -52,8 +52,13 @@ class WeatherManager: ObservableObject {
             
             do {
                 let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                print("Attempting to decode data...")
                 weatherData = try decoder.decode(WeatherData.self, from: data)
+                
+                // Print the received data structure
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    print("Received JSON: \(jsonString)")
+                }
                 
                 // Validate data
                 guard let _ = weatherData?.current.temperature2m,
@@ -91,36 +96,9 @@ class WeatherManager: ObservableObject {
         let queryItems = [
             URLQueryItem(name: "latitude", value: String(location.coordinate.latitude)),
             URLQueryItem(name: "longitude", value: String(location.coordinate.longitude)),
-            URLQueryItem(name: "current", value: [
-                "temperature_2m",
-                "relative_humidity_2m",
-                "weather_code",
-                "wind_speed_10m",
-                "wind_direction_10m",
-                "is_day",
-                "pressure_msl",
-                "visibility",
-                "cloud_cover",
-                "uv_index"
-            ].joined(separator: ",")),
-            URLQueryItem(name: "hourly", value: [
-                "temperature_2m",
-                "relative_humidity_2m",
-                "weather_code",
-                "wind_speed_10m",
-                "wind_direction_10m",
-                "is_day",
-                "precipitation_probability"
-            ].joined(separator: ",")),
-            URLQueryItem(name: "daily", value: [
-                "weather_code",
-                "temperature_2m_max",
-                "temperature_2m_min",
-                "sunrise",
-                "sunset",
-                "uv_index_max",
-                "precipitation_probability_max"
-            ].joined(separator: ",")),
+            URLQueryItem(name: "current", value: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day,pressure_msl,visibility,cloud_cover,uv_index"),
+            URLQueryItem(name: "hourly", value: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day,precipitation_probability"),
+            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max"),
             URLQueryItem(name: "timezone", value: "auto"),
             URLQueryItem(name: "forecast_days", value: "7")
         ]

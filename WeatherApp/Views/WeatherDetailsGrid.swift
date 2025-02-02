@@ -23,7 +23,7 @@ struct WeatherDetailsGrid: View {
                           icon: "eye.fill")
             
             WeatherInfoItem(title: "Pressure",
-                          value: "\(Int(weather.pressure)) hPa",
+                          value: "\(Int(weather.pressureMsl)) hPa",
                           icon: "gauge")
             
             WeatherInfoItem(title: "Cloud Cover",
