@@ -55,4 +55,23 @@ struct WeatherHeaderView: View {
         let temperature = settingsManager.isMetric ? temp : (temp * 9/5 + 32)
         return String(format: "%.1f", temperature)
     }
+    
+    private func getWeatherIcon(_ condition: String) -> String {
+        switch condition.lowercased() {
+        case "clear":
+            return "sun.max.fill"
+        case "clouds":
+            return "cloud.fill"
+        case "rain":
+            return "cloud.rain.fill"
+        case "snow":
+            return "cloud.snow.fill"
+        case "thunderstorm":
+            return "cloud.bolt.fill"
+        case "fog":
+            return "cloud.fog.fill"
+        default:
+            return "cloud.fill"
+        }
+    }
 }
