@@ -3,6 +3,7 @@ import SwiftUI
 struct CurrentWeatherView: View {
     @EnvironmentObject var weatherManager: WeatherManager
     @EnvironmentObject var settingsManager: SettingsManager
+    @Environment(\.colorScheme) var colorScheme
     @State private var isRefreshing = false
     
     var body: some View {
@@ -77,7 +78,8 @@ struct CurrentWeatherView: View {
                     EmptyStateView()
                 }
             }
-            .background(Color(.systemBackground))
+            .background(WeatherColors.background)
+            .preferredColorScheme(settingsManager.isDarkMode ? .dark : .light)
             .refreshable {
                 isRefreshing = true
                 await weatherManager.refreshWeather()

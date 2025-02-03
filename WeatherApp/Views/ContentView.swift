@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var weatherManager: WeatherManager
     @StateObject private var locationManager = LocationManager()
+    @EnvironmentObject var settingsManager: SettingsManager
     
     var body: some View {
         NavigationStack {
@@ -38,6 +39,7 @@ struct ContentView: View {
                 // Initial weather fetch with retry
                 await fetchWeatherWithRetry()
             }
+            .preferredColorScheme(settingsManager.isDarkMode ? .dark : .light)
         }
         .environmentObject(locationManager)
     }
