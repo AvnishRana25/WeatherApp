@@ -110,11 +110,11 @@ struct DailyWeatherCell: View {
     private func getWeatherColor(_ condition: String) -> Color {
         switch condition.lowercased() {
         case "clear": return .orange
-        case "clouds": return .gray
+        case "clouds": return colorScheme == .dark ? .gray : Color(.systemGray1)
         case "rain": return .blue
         case "snow": return .cyan
         case "thunderstorm": return .purple
-        default: return .gray
+        default: return colorScheme == .dark ? .gray : Color(.systemGray1)
         }
     }
 }
