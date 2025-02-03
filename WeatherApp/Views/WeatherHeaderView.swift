@@ -79,12 +79,12 @@ struct WeatherHeaderView: View {
     private func getWeatherColor(_ condition: String) -> Color {
         switch condition.lowercased() {
         case "clear": return .orange
-        case "clouds": return .gray
+        case "clouds": return colorScheme == .dark ? .gray : Color(.systemGray)
         case "rain": return .blue
         case "snow": return .cyan
         case "thunderstorm": return .purple
-        case "overcast": return colorScheme == .dark ? .gray : .secondary
-        default: return colorScheme == .dark ? .gray : .secondary
+        case "overcast": return colorScheme == .dark ? .gray : Color(.systemGray)
+        default: return colorScheme == .dark ? .gray : Color(.systemGray)
         }
     }
 }
