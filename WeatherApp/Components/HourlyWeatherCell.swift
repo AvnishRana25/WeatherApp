@@ -3,31 +3,50 @@ import SwiftUI
 struct HourlyWeatherCell: View {
     let hourly: WeatherData.HourlyForecast
     @EnvironmentObject var settingsManager: SettingsManager
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             Text(formatHour(hourly.time))
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.secondary : WeatherColors.Light.secondary)
             
-            Image(systemName: getWeatherIcon(hourly.weather.main, isDay: hourly.isDay == 1))
-                .font(.title2)
-                .symbolEffect(.bounce)
+            ZStack {
+                Circle()
+                    .fill(getWeatherColor(hourly.weather.main).opacity(colorScheme == .dark ? 0.2 : 0.1))
+                    .frame(width: 40, height: 40)
+                
+                Image(systemName: getWeatherIcon(hourly.weather.main, isDay: hourly.isDay == 1))
+                    .font(.title3)
+                    .symbolRenderingMode(.multicolor)
+                    .symbolEffect(.bounce)
+            }
             
             Text("\(formatTemperature(hourly.temp))°")
-                .font(.headline)
+                .font(.system(.headline, design: .rounded, weight: .semibold))
             
             if hourly.precipitationProbability > 0 {
-                Text("\(hourly.precipitationProbability)%")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                HStack(spacing: 2) {
+                    Image(systemName: "drop.fill")
+                        .font(.caption2)
+                    Text("\(hourly.precipitationProbability)%")
+                }
+                .font(.caption2)
+                .foregroundStyle(.blue)
             }
         }
-        .frame(width: 70)
-        .padding()
-        .background(Color.secondary.opacity(0.1))
-        .cornerRadius(10)
-        .animation(.spring(response: 0.3), value: hourly.temp)
+        .frame(width: 80)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 8)
+        .background {
+            RoundedRectangle(cornerRadius: 14)
+                .fill(colorScheme == .dark ? WeatherColors.Dark.surfaceSecondary : WeatherColors.Light.surfaceSecondary)
+                .shadow(color: Color.primary.opacity(0.1), radius: 5, x: 0, y: 2)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
+        }
     }
     
     private func formatHour(_ timeString: String) -> String {
@@ -64,4 +83,16 @@ struct HourlyWeatherCell: View {
             return isDay ? "cloud.sun.fill" : "cloud.moon.fill"
         }
     }
+    
+    private func getWeatherColor(_ condition: String) -> Color {
+        switch condition.lowercased() {
+        case "clear": return .orange
+        case "clouds": return .gray
+        case "rain": return .blue
+        case "snow": return .cyan
+        case "thunderstorm": return .purple
+        default: return .gray
+        }
+    }
 }
+

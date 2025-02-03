@@ -3,48 +3,76 @@ import SwiftUI
 struct DailyWeatherCell: View {
     let daily: WeatherData.DailyForecast
     @EnvironmentObject var settingsManager: SettingsManager
+    @Environment(\.colorScheme) var colorScheme
+    @State private var isHovered = false
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
+        HStack(spacing: 16) {
+            // Day and Weather Info
+            VStack(alignment: .leading, spacing: 6) {
                 Text(formatDay(daily.time))
-                    .font(.headline)
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.primary : WeatherColors.Light.primary)
                 
                 Text(daily.weather.description.capitalized)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+                    .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.secondary : WeatherColors.Light.secondary)
                 
                 if daily.precipitationProbability > 0 {
                     HStack(spacing: 4) {
                         Image(systemName: "drop.fill")
                             .foregroundStyle(.blue)
                         Text("\(daily.precipitationProbability)%")
+                            .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.secondary : WeatherColors.Light.secondary)
                     }
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .font(.caption)
                 }
             }
             
             Spacer()
             
-            Image(systemName: getWeatherIcon(daily.weather.main))
-                .font(.title2)
-                .symbolEffect(.bounce)
-                .frame(width: 50)
+            // Weather Icon
+            ZStack {
+                Circle()
+                    .fill(getWeatherColor(daily.weather.main).opacity(colorScheme == .dark ? 0.2 : 0.1))
+                    .frame(width: 44, height: 44)
+                
+                Image(systemName: getWeatherIcon(daily.weather.main))
+                    .font(.title2)
+                    .symbolRenderingMode(.multicolor)
+                    .symbolEffect(.bounce)
+            }
             
-            HStack(spacing: 16) {
+            // Temperature Range
+            HStack(spacing: 12) {
                 Text("\(formatTemperature(daily.tempMax))°")
-                    .font(.headline)
+                    .font(.system(.title3, design: .rounded, weight: .semibold))
+                    .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.primary : WeatherColors.Light.primary)
                 
                 Text("\(formatTemperature(daily.tempMin))°")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.secondary : WeatherColors.Light.secondary)
             }
             .frame(width: 100)
         }
-        .padding(.horizontal)
-        .contentShape(Rectangle())
-        .hoverEffect()
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(colorScheme == .dark ? WeatherColors.Dark.surfaceSecondary : WeatherColors.Light.surfaceSecondary)
+                .shadow(
+                    color: (colorScheme == .dark ? WeatherColors.Dark.shadow : WeatherColors.Light.shadow)
+                        .opacity(isHovered ? 0.15 : 0.1),
+                    radius: isHovered ? 8 : 5,
+                    x: 0,
+                    y: isHovered ? 4 : 2
+                )
+        }
+        .scaleEffect(isHovered ? 1.01 : 1.0)
+        .animation(.spring(response: 0.3), value: isHovered)
+        .onHover { hovering in
+            isHovered = hovering
+        }
     }
     
     private func formatDay(_ timeString: String) -> String {
@@ -76,6 +104,17 @@ struct DailyWeatherCell: View {
             return "cloud.fog.fill"
         default:
             return "cloud.fill"
+        }
+    }
+    
+    private func getWeatherColor(_ condition: String) -> Color {
+        switch condition.lowercased() {
+        case "clear": return .orange
+        case "clouds": return .gray
+        case "rain": return .blue
+        case "snow": return .cyan
+        case "thunderstorm": return .purple
+        default: return .gray
         }
     }
 }

@@ -5,22 +5,45 @@ struct HourlyPreviewView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Hourly Forecast")
-                .font(.headline)
-                .padding(.bottom, 8)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "clock")
+                    .font(.headline)
+                    .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.primary : WeatherColors.Light.primary)
+                Text("Hourly Forecast")
+                    .font(.headline)
+            }
+            .padding(.horizontal)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 16) {
+                LazyHStack(spacing: 12) {
                     ForEach(hourlyData.prefix(24)) { hour in
                         HourlyWeatherCell(hourly: hour)
                     }
                 }
-                .padding(.horizontal, 4)
+                .padding(.horizontal)
             }
         }
-        .padding(.vertical)
-        .background(colorScheme == .dark ? Color.black.opacity(0.2) : Color.white.opacity(0.7))
-        .cornerRadius(12)
+        .padding(.vertical, 16)
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .dark ? WeatherColors.Dark.surface : WeatherColors.Light.surface)
+                .shadow(color: colorScheme == .dark ? WeatherColors.Dark.shadow : WeatherColors.Light.shadow,
+                       radius: 10, x: 0, y: 4)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            colorScheme == .dark ? WeatherColors.Dark.gradient1 : WeatherColors.Light.gradient1,
+                            colorScheme == .dark ? WeatherColors.Dark.gradient2 : WeatherColors.Light.gradient2
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+        }
     }
 } 
