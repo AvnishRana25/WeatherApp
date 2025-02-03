@@ -1,3 +1,9 @@
+//
+//  WeatherAppApp.swift
+//  WeatherApp
+//
+//  Created by Avnish Rana on 03/02/25.
+
 import SwiftUI
 
 struct DailyForecastView: View {
@@ -27,7 +33,6 @@ struct DailyForecastView: View {
                                     .padding(.vertical, 8)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
-                                        // Future expansion: Show detailed view
                                     }
                             }
                         } header: {

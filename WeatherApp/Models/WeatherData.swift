@@ -1,3 +1,9 @@
+//
+//  WeatherAppApp.swift
+//  WeatherApp
+//
+//  Created by Avnish Rana on 02/02/25.
+
 import Foundation
 
 struct WeatherData: Decodable, Equatable {
@@ -39,7 +45,7 @@ struct WeatherData: Decodable, Equatable {
         
         var weather: Weather { Weather(code: weatherCode) }
         
-        // Add computed properties to match WeatherDetailsGrid usage
+    
         var temperature: Double { temperature2m }
         var humidity: Int { relativeHumidity2m }
         var windSpeed: Double { windSpeed10m }
@@ -47,7 +53,7 @@ struct WeatherData: Decodable, Equatable {
         var clouds: Int { cloudCover }
     }
     
-    // MARK: - Hourly Forecast
+  
     struct Hourly: Codable, Equatable {
         let time: [String]
         let temperature2m: [Double]
@@ -87,7 +93,7 @@ struct WeatherData: Decodable, Equatable {
         }
     }
     
-    // MARK: - Daily Forecast
+
     struct Daily: Codable, Equatable {
         let time: [String]
         let weatherCode: [Int]
@@ -127,7 +133,7 @@ struct WeatherData: Decodable, Equatable {
         }
     }
     
-    // MARK: - Helper Models
+
     struct HourlyForecast: Identifiable, Equatable {
         let time: String
         let temp: Double
@@ -156,7 +162,7 @@ struct WeatherData: Decodable, Equatable {
         var weather: Weather { Weather(code: weatherCode) }
     }
     
-    // MARK: - Weather Helper
+  
     struct Weather: Equatable {
         let code: Int
         
