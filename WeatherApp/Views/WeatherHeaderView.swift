@@ -19,10 +19,11 @@ struct WeatherHeaderView: View {
                     .font(.title)
                     .symbolRenderingMode(.multicolor)
                     .symbolEffect(.bounce)
+                    .foregroundStyle(getWeatherColor(weather.weather.main))
                 Text(weather.weather.description.capitalized)
                     .font(.title2)
+                    .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.secondary : WeatherColors.Light.secondary)
             }
-            .foregroundStyle(colorScheme == .dark ? WeatherColors.Dark.secondary : WeatherColors.Light.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 25)
@@ -72,6 +73,18 @@ struct WeatherHeaderView: View {
             return "cloud.fog.fill"
         default:
             return "cloud.fill"
+        }
+    }
+    
+    private func getWeatherColor(_ condition: String) -> Color {
+        switch condition.lowercased() {
+        case "clear": return .orange
+        case "clouds": return .gray
+        case "rain": return .blue
+        case "snow": return .cyan
+        case "thunderstorm": return .purple
+        case "overcast": return colorScheme == .dark ? .gray : .secondary
+        default: return colorScheme == .dark ? .gray : .secondary
         }
     }
 }
