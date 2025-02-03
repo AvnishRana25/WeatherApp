@@ -30,7 +30,14 @@ struct WeatherDetailsGrid: View {
                           value: "\(weather.cloudCover)%",
                           icon: "cloud.fill")
         }
-        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weather.temperature2m)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: [
+            weather.relativeHumidity2m,
+            weather.windSpeed10m,
+            weather.uvIndex,
+            weather.visibility,
+            weather.pressureMsl,
+            weather.cloudCover
+        ])
     }
     
     private func formatWindSpeed(_ speed: Double) -> String {

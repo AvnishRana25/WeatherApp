@@ -6,11 +6,10 @@ struct WeatherHeaderView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            Text("\(formatTemperature(weather.temperature))°")
+            Text("\(formatTemperature(weather.temperature2m))°")
                 .font(.system(size: 72, weight: .bold))
                 .symbolEffect(.bounce)
             
-            // Use temperature directly since feelsLike is not available
             Text(weather.weather.description.capitalized)
                 .font(.title2)
                 .foregroundColor(.secondary)
@@ -19,7 +18,7 @@ struct WeatherHeaderView: View {
         .padding()
         .background(Color.secondary.opacity(0.1))
         .cornerRadius(15)
-        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weather.temperature)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: weather.temperature2m)
     }
     
     private func formatTemperature(_ temp: Double) -> String {
