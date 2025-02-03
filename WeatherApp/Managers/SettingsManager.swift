@@ -1,3 +1,9 @@
+//
+//  WeatherAppApp.swift
+//  WeatherApp
+//
+//  Created by Avnish Rana on 02/02/25.
+
 import Foundation
 
 class SettingsManager: ObservableObject {

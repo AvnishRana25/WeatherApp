@@ -1,3 +1,9 @@
+//
+//  WeatherAppApp.swift
+//  WeatherApp
+//
+//  Created by Avnish Rana on 02/02/25.
+
 import Foundation
 import CoreLocation
 
@@ -52,7 +58,6 @@ class WeatherManager: ObservableObject {
             return
         }
         
-        // Update location name first
         await updateLocationName(for: location)
         
         isLoading = true
@@ -87,12 +92,10 @@ class WeatherManager: ObservableObject {
                 print("Attempting to decode data...")
                 weatherData = try decoder.decode(WeatherData.self, from: data)
                 
-                // Print the received data structure
                 if let jsonString = String(data: data, encoding: .utf8) {
                     print("Received JSON: \(jsonString)")
                 }
                 
-                // Validate data
                 guard let _ = weatherData?.current.temperature2m,
                       !weatherData!.daily.forecasts.isEmpty,
                       !weatherData!.hourly.forecasts.isEmpty else {
