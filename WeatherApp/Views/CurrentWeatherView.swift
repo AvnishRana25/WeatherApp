@@ -24,7 +24,7 @@ struct CurrentWeatherView: View {
                                     Spacer()
                                     Text(weatherManager.locationName ?? "Current Location")
                                         .font(.system(size: 28, weight: .bold))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.primary)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.75)
                                     Spacer()
@@ -33,16 +33,16 @@ struct CurrentWeatherView: View {
                             .frame(maxWidth: .infinity, maxHeight: 60)
                             .padding(.vertical, 8)
                             .padding(.horizontal)
-                            .background(Color.black.opacity(0.5))
+                            .background(Color(.systemBackground).opacity(0.5))
                             .cornerRadius(10)
                             
                             WeatherHeaderView(weather: weather.current)
                                 .transition(.moveAndFade)
                         }
                         .padding()
-                        .background(ColorTheme.cardBackground.opacity(0.8))
+                        .background(Color(.systemBackground).opacity(0.8))
                         .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .shadow(color: ColorTheme.primary.opacity(0.3), radius: 10, x: 0, y: 2)
+                        .shadow(color: Color.primary.opacity(0.3), radius: 10, x: 0, y: 2)
                         
                         // Weather Details Grid
                         WeatherDetailsGrid(weather: weather.current)
@@ -55,16 +55,16 @@ struct CurrentWeatherView: View {
                                 Text("Today's Forecast")
                                     .font(.title3)
                                     .fontWeight(.semibold)
-                                    .foregroundColor(ColorTheme.text)
+                                    .foregroundColor(.primary)
                                     .padding(.horizontal)
                                 
                                 HourlyPreviewView(hourlyData: Array(weather.hourly.forecasts.prefix(24)))
                                     .transition(.slide)
                             }
                             .padding()
-                            .background(ColorTheme.cardBackground)
+                            .background(Color(.systemBackground))
                             .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .shadow(color: ColorTheme.primary.opacity(0.1), radius: 10)
+                            .shadow(color: Color.primary.opacity(0.1), radius: 10)
                         }
                     }
                     .padding()
@@ -77,7 +77,7 @@ struct CurrentWeatherView: View {
                     EmptyStateView()
                 }
             }
-            .background(ColorTheme.background)
+            .background(Color(.systemBackground))
             .refreshable {
                 isRefreshing = true
                 await weatherManager.refreshWeather()
@@ -94,9 +94,9 @@ struct LoadingView: View {
         VStack {
             ProgressView()
                 .scaleEffect(1.5)
-                .tint(ColorTheme.primary)
+                .tint(Color.accentColor)
             Text("Loading weather data...")
-                .foregroundColor(ColorTheme.textSecondary)
+                .foregroundColor(.secondary)
                 .padding(.top)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -107,11 +107,11 @@ struct LoadingView: View {
 struct LoadingOverlay: View {
     var body: some View {
         ZStack {
-            ColorTheme.background.opacity(0.8)
+            Color(.systemBackground).opacity(0.8)
                 .ignoresSafeArea()
             ProgressView()
                 .scaleEffect(1.5)
-                .tint(ColorTheme.primary)
+                .tint(Color.accentColor)
         }
         .background(.ultraThinMaterial)
     }
@@ -122,10 +122,10 @@ struct EmptyStateView: View {
         VStack(spacing: 15) {
             Image(systemName: "cloud.sun.fill")
                 .font(.system(size: 50))
-                .foregroundColor(ColorTheme.secondary)
+                .foregroundColor(.secondary)
             Text("No weather data available")
                 .font(.headline)
-                .foregroundColor(ColorTheme.textSecondary)
+                .foregroundColor(.secondary)
         }
         .padding(.top, 100)
     }

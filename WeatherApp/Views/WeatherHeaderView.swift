@@ -8,7 +8,6 @@ struct WeatherHeaderView: View {
         VStack(spacing: 10) {
             Text("\(formatTemperature(weather.temperature2m))°")
                 .font(.system(size: 72, weight: .bold))
-                .symbolEffect(.bounce)
             
             Text(weather.weather.description.capitalized)
                 .font(.title2)
