@@ -2,11 +2,15 @@ import Foundation
 
 class SettingsManager: ObservableObject {
     @Published var isMetric = true
-    @Published var isDarkMode = false
+    @Published var isDarkMode: Bool {
+        didSet {
+            UserDefaults.standard.set(isDarkMode, forKey: "isDarkMode")
+        }
+    }
     
     init() {
         isMetric = UserDefaults.standard.bool(forKey: "isMetric")
-        isDarkMode = UserDefaults.standard.bool(forKey: "isDarkMode")
+        self.isDarkMode = UserDefaults.standard.bool(forKey: "isDarkMode")
     }
     
     func toggleUnit() {
